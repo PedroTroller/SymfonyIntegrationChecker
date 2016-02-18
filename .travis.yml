@@ -1,0 +1,18 @@
+language: php
+
+php:
+    - 5.5
+    - 5.6
+    - 7
+
+env:
+    - COMPOSER_PREFER=--prefer-lowest
+    - COMPOSER_PREFER=--prefer-stable
+
+before_script:
+    - phpenv config-rm xdebug.ini
+    - composer update --dev $COMPOSER_PREFER
+
+script:
+    - bin/symfony-integration-checker check -vvv
+    - bin/php-cs-fixer --diff --dry-run -v fix

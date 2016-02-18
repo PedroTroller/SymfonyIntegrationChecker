@@ -1,0 +1,30 @@
+#!/usr/bin/env php
+<?php
+
+function includeIfExists($file)
+{
+    return file_exists($file) ? include $file : null;
+}
+
+$autoloads = array(
+    sprintf('%s/../../../autoload.php', __DIR__),
+    sprintf('%s/../vendor/autoload.php', __DIR__),
+    sprintf('%s/../autoload.php', __DIR__),
+);
+
+$loaded = false;
+
+foreach ($autoloads as $autoload) {
+    $loaded = null === includeIfExists($autoload) ? $loaded : true;
+
+    if (true === $loaded) {
+        break;
+    }
+}
+
+if (false === $loaded) {
+    throw new \Exception('Can\'t find autoload');
+}
+
+$application = new Pedrotroller\Symfony\IntegrationChecker\Application;
+$application->run();
