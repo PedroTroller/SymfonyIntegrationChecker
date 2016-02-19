@@ -17,7 +17,7 @@ class ConfigurableKernel extends Kernel
     /**
      * @var array
      */
-    private $config;
+    private $config = array();
 
     /**
      * @* @var callable[]
