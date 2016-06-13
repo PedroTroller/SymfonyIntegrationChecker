@@ -1,6 +1,6 @@
 <?php
 
-namespace Pedrotroller\Symfony\IntegrationChecker;
+namespace PedroTroller\Symfony\IntegrationChecker;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,11 +25,28 @@ class ConfigurableKernel extends Kernel
     private $afterBoot = array();
 
     /**
+     * @var string
+     */
+    private $rootDirectory;
+
+    /**
+     * @param string $rootDirectory
+     *
+     * @return ConfigurableKernel
+     */
+    public function setRootDirectory($rootDirectory)
+    {
+        $this->rootDirectory = $rootDirectory;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getCacheDir()
     {
-        return sys_get_temp_dir();
+        return rtrim($this->rootDirectory, '/') . '/cache';
     }
 
     /**
@@ -37,7 +54,7 @@ class ConfigurableKernel extends Kernel
      */
     public function getLogDir()
     {
-        return sys_get_temp_dir();
+        return rtrim($this->rootDirectory, '/') . '/logs';
     }
 
     /**

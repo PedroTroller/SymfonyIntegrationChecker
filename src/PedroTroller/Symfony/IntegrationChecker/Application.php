@@ -1,8 +1,8 @@
 <?php
 
-namespace Pedrotroller\Symfony\IntegrationChecker;
+namespace PedroTroller\Symfony\IntegrationChecker;
 
-use Pedrotroller\Symfony\IntegrationChecker\Command\CheckCommand;
+use PedroTroller\Symfony\IntegrationChecker\Command\CheckCommand;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Input\ArgvInput;

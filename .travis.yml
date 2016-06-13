@@ -14,5 +14,4 @@ before_script:
     - composer update --dev $COMPOSER_PREFER
 
 script:
-    - bin/symfony-integration-checker check -vvv
-    - bin/php-cs-fixer --diff --dry-run -v fix
+    - make test

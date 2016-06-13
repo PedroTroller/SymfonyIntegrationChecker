@@ -26,5 +26,5 @@ if (false === $loaded) {
     throw new \Exception('Can\'t find autoload');
 }
 
-$application = new Pedrotroller\Symfony\IntegrationChecker\Application;
+$application = new PedroTroller\Symfony\IntegrationChecker\Application;
 $application->run();

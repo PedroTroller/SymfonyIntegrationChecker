@@ -1,5 +1,7 @@
 {
     "name": "pedrotroller/symfony-integration-checker",
+    "description": "Assert that your bundle integration with symfony is still working.",
+    "license": "MIT",
     "authors": [
         {
             "name": "Pierre PLAZANET",
@@ -13,13 +15,19 @@
     },
     "require-dev": {
         "fabpot/php-cs-fixer": "~1.11.0",
+        "phpspec/phpspec": "^2.5",
         "symfony/framework-bundle": "~2.3|~3.0"
     },
     "autoload": {
-        "psr-0": { "Pedrotroller\\Symfony\\IntegrationChecker": "src/" }
+        "psr-4": { "PedroTroller\\Symfony\\IntegrationChecker\\": "src/PedroTroller/Symfony/IntegrationChecker" }
     },
     "config": {
         "bin-dir": "bin"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     },
     "bin": [
         "bin/symfony-integration-checker"

@@ -1,8 +1,8 @@
 <?php
 
-namespace Pedrotroller\Symfony\IntegrationChecker\Command;
+namespace PedroTroller\Symfony\IntegrationChecker\Command;
 
-use Pedrotroller\Symfony\IntegrationChecker\ConfigurableKernel;
+use PedroTroller\Symfony\IntegrationChecker\ConfigurableKernel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,6 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckCommand extends Command
 {
+    const DEFAULT_ROOT = '/dev/shm';
+
     /**
      * {@inheritdoc}
      */
@@ -19,6 +21,7 @@ class CheckCommand extends Command
         $this
             ->setName('check')
             ->addArgument('bootstrap_file', InputArgument::OPTIONAL, 'The kernel initialisation file.', $this->getDefaultBootstrapFilename())
+            ->addOption('root_directory', 'd', InputOption::VALUE_OPTIONAL, 'Cache/Logs directory', self::DEFAULT_ROOT)
             ->addOption('env', 'e', InputOption::VALUE_REQUIRED, 'Symfony environement', 'prod')
         ;
     }
@@ -43,7 +46,9 @@ class CheckCommand extends Command
             throw new \Exception(sprintf('Bootstrap file "%s" not found', $file));
         }
 
-        $kernel   = new ConfigurableKernel($env, true);
+        $kernel = new ConfigurableKernel($env, true);
+        $kernel->setRootDirectory($input->hasOption('root_directory') ? $input->getOption('root_directory') : self::DEFAULT_ROOT);
+
         $callback = require $file;
 
         $callback($kernel);
@@ -66,6 +71,6 @@ class CheckCommand extends Command
      */
     private function getDefaultBootstrapFilename()
     {
-        return sprintf('%s/checker_bootstrap.php', getcwd());
+        return sprintf('%s/.symfony_checker', getcwd());
     }
 }
