@@ -1,5 +1,4 @@
-#SYMFONY Integration Checker
-============================
+# SYMFONY Integration Checker
 
 ## Installation
 

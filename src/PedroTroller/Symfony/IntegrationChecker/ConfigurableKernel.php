@@ -29,6 +29,13 @@ class ConfigurableKernel extends Kernel
      */
     private $rootDirectory;
 
+    public function __construct($environment, $debug)
+    {
+        parent::__construct($environment, $debug);
+
+        $this->rootDirectory = sprintf('%s/../../../cache', __DIR__);
+    }
+
     /**
      * @param string $rootDirectory
      *
