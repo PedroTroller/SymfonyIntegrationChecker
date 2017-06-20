@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-$ composer require pedrotroller/symfony-integration-checker --dev ~1.0.0
+$ composer require pedrotroller/symfony-integration-checker --dev
 ```
 
 ## Usage
