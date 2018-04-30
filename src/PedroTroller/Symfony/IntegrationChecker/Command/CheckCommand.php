@@ -16,19 +16,6 @@ class CheckCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
-        $this
-            ->setName('check')
-            ->addArgument('bootstrap_file', InputArgument::OPTIONAL, 'The kernel initialisation file.', $this->getDefaultBootstrapFilename())
-            ->addOption('root_directory', 'd', InputOption::VALUE_OPTIONAL, 'Cache/Logs directory', self::DEFAULT_ROOT)
-            ->addOption('env', 'e', InputOption::VALUE_REQUIRED, 'Symfony environement', 'prod')
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function run(InputInterface $input, OutputInterface $output)
     {
         $file = $this->getDefaultBootstrapFilename();
@@ -64,6 +51,18 @@ class CheckCommand extends Command
         }
 
         $output->writeln('<info>Symfony integration succeeded</info>');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('check')
+            ->addArgument('bootstrap_file', InputArgument::OPTIONAL, 'The kernel initialisation file.', $this->getDefaultBootstrapFilename())
+            ->addOption('root_directory', 'd', InputOption::VALUE_OPTIONAL, 'Cache/Logs directory', self::DEFAULT_ROOT)
+            ->addOption('env', 'e', InputOption::VALUE_REQUIRED, 'Symfony environement', 'prod');
     }
 
     /**

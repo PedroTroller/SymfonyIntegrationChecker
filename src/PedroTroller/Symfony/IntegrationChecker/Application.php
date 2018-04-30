@@ -32,6 +32,6 @@ class Application extends BaseApplication
      */
     protected function getDefaultHelperSet()
     {
-        return new HelperSet(array());
+        return new HelperSet([]);
     }
 }

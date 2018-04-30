@@ -17,12 +17,12 @@ class ConfigurableKernel extends Kernel
     /**
      * @var array
      */
-    private $config = array();
+    private $config = [];
 
     /**
      * @* @var callable[]
      */
-    private $afterBoot = array();
+    private $afterBoot = [];
 
     /**
      * @var string
@@ -34,6 +34,48 @@ class ConfigurableKernel extends Kernel
         parent::__construct($environment, $debug);
 
         $this->rootDirectory = sprintf('%s/../../../cache', __DIR__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getContainerBuilder()
+    {
+        if (null === $this->containerBuilder) {
+            $this->containerBuilder = parent::getContainerBuilder();
+        } else {
+            $this->containerBuilder->merge(parent::getContainerBuilder());
+        }
+
+        foreach ($this->config as $extension => $config) {
+            $this->containerBuilder->prependExtensionConfig($extension, $config);
+        }
+
+        return $this->containerBuilder;
+    }
+
+    /**
+     * @param ContainerBuilder $containerBuilder
+     *
+     * @return ConfigurableKernel
+     */
+    public function setContainerBuilder(ContainerBuilder $containerBuilder)
+    {
+        $this->containerBuilder = $containerBuilder;
+
+        return $this;
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return ConfigurableKernel
+     */
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
+
+        return $this;
     }
 
     /**
@@ -53,7 +95,7 @@ class ConfigurableKernel extends Kernel
      */
     public function getCacheDir()
     {
-        return rtrim($this->rootDirectory, '/') . '/cache';
+        return rtrim($this->rootDirectory, '/').'/cache';
     }
 
     /**
@@ -61,7 +103,7 @@ class ConfigurableKernel extends Kernel
      */
     public function getLogDir()
     {
-        return rtrim($this->rootDirectory, '/') . '/logs';
+        return rtrim($this->rootDirectory, '/').'/logs';
     }
 
     /**
@@ -93,18 +135,6 @@ class ConfigurableKernel extends Kernel
     }
 
     /**
-     * @param ContainerBuilder $containerBuilder
-     *
-     * @return ConfigurableKernel
-     */
-    public function setContainerBuilder(ContainerBuilder $containerBuilder)
-    {
-        $this->containerBuilder = $containerBuilder;
-
-        return $this;
-    }
-
-    /**
      * @param callable $callable
      *
      * @return ConfigurableKernel
@@ -122,35 +152,5 @@ class ConfigurableKernel extends Kernel
     public function getAfterBootCallables()
     {
         return $this->afterBoot;
-    }
-
-    /**
-     * @param array $config
-     *
-     * @return ConfigurableKernel
-     */
-    public function setConfig(array $config)
-    {
-        $this->config = $config;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getContainerBuilder()
-    {
-        if (null === $this->containerBuilder) {
-            $this->containerBuilder = parent::getContainerBuilder();
-        } else {
-            $this->containerBuilder->merge(parent::getContainerBuilder());
-        }
-
-        foreach ($this->config as $extension => $config) {
-            $this->containerBuilder->prependExtensionConfig($extension, $config);
-        }
-
-        return $this->containerBuilder;
     }
 }
