@@ -1,13 +1,35 @@
 <?php
 
-use PedroTroller\CS\Fixer\ConfigurationBuilder;
+declare(strict_types=1);
 
-$config = PhpCsFixer\Config::create()
+use PedroTroller\CS\Fixer\Fixers;
+use PedroTroller\CS\Fixer\RuleSetFactory;
+
+return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
-    ->setRules(ConfigurationBuilder::buildCustomConfiguration())
-    ->setUsingCache(true)
-    ->registerCustomFixers(new PedroTroller\CS\Fixer\Fixers())
-    ->setFinder(PhpCsFixer\Finder::create()->in(__DIR__))
+    ->setRules(
+        RuleSetFactory::create()
+            ->phpCsFixer(true)
+            ->php(7.2, true)
+            ->pedrotroller(true)
+            ->enable('ordered_imports')
+            ->enable('ordered_interfaces')
+            ->enable('align_multiline_comment')
+            ->enable('array_indentation')
+            ->enable('no_superfluous_phpdoc_tags')
+            ->enable('binary_operator_spaces', [
+                'operators' => [
+                    '='  => 'align_single_space_minimal',
+                    '=>' => 'align_single_space_minimal',
+                ],
+            ])
+            ->getRules()
+    )
+    ->setUsingCache(false)
+    ->registerCustomFixers(new Fixers())
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->in(__DIR__)
+            ->append([__FILE__, __DIR__.'/.symfony_checker'])
+    )
 ;
-
-return $config;

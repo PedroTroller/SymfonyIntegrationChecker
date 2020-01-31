@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PedroTroller\Symfony\IntegrationChecker;
 
 use PedroTroller\Symfony\IntegrationChecker\Command\CheckCommand;
@@ -15,7 +17,7 @@ class Application extends BaseApplication
     /**
      * {@inheritdoc}
      */
-    public function run(InputInterface $input = null, OutputInterface $output = null)
+    public function run(InputInterface $input = null, OutputInterface $output = null): void
     {
         $input  = null !== $input ? $input : new ArgvInput();
         $output = null !== $output ? $output : new ConsoleOutput();

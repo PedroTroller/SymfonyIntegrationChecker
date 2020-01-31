@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PedroTroller\Symfony\IntegrationChecker\Command;
 
+use Exception;
 use PedroTroller\Symfony\IntegrationChecker\ConfigurableKernel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,9 +16,6 @@ class CheckCommand extends Command
 {
     const DEFAULT_ROOT = '/dev/shm';
 
-    /**
-     * {@inheritdoc}
-     */
     public function run(InputInterface $input, OutputInterface $output)
     {
         $file = $this->getDefaultBootstrapFilename();
@@ -30,11 +30,13 @@ class CheckCommand extends Command
         }
 
         if (false === file_exists($file)) {
-            throw new \Exception(sprintf('Bootstrap file "%s" not found', $file));
+            throw new Exception(sprintf('Bootstrap file "%s" not found.', $file));
         }
 
+        $rootDirectory = $input->hasOption('root_directory') ? $input->getOption('root_directory') : null;
+
         $kernel = new ConfigurableKernel($env, true);
-        $kernel->setRootDirectory($input->hasOption('root_directory') ? $input->getOption('root_directory') : self::DEFAULT_ROOT);
+        $kernel->setRootDirectory(\is_string($rootDirectory) ? $rootDirectory : self::DEFAULT_ROOT);
 
         $callback = require $file;
 
@@ -51,18 +53,22 @@ class CheckCommand extends Command
         }
 
         $output->writeln('<info>Symfony integration succeeded</info>');
+
+        return 0;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('check')
+            ->setDescription('Check the intégrity of the Symfony integration')
             ->addArgument('bootstrap_file', InputArgument::OPTIONAL, 'The kernel initialisation file.', $this->getDefaultBootstrapFilename())
             ->addOption('root_directory', 'd', InputOption::VALUE_OPTIONAL, 'Cache/Logs directory', self::DEFAULT_ROOT)
-            ->addOption('env', 'e', InputOption::VALUE_REQUIRED, 'Symfony environement', 'prod');
+            ->addOption('env', 'e', InputOption::VALUE_REQUIRED, 'Symfony environement', 'prod')
+        ;
     }
 
     /**

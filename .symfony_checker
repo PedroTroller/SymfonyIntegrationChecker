@@ -1,28 +1,35 @@
 <?php
 
-use Pedrotroller\Symfony\IntegrationChecker\ConfigurableKernel;
+declare(strict_types=1);
+
+use PedroTroller\Symfony\IntegrationChecker\ConfigurableKernel;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
-$config = array(
-    'framework' => array(
-        'translator' => array(
+$config = [
+    'framework' => [
+        'translator' => [
             'enabled' => true,
-        ),
-    ),
-);
+        ],
+    ],
+];
 
-$test = function (KernelInterface $kernel) {
-    if (false === $kernel->getContainer()->get('translator') instanceof TranslatorInterface) {
-        throw new \Exception('Oups, there is a problem !');
+$test = function (KernelInterface $kernel): void {
+    if ($kernel->getContainer()->get('translator') instanceof \Symfony\Contracts\Translation\TranslatorInterface) {
+        return;
     }
+
+    if ($kernel->getContainer()->get('translator') instanceof \Symfony\Component\Translation\TranslatorInterface) {
+        return;
+    }
+
+    throw new \Exception('Oups, there is a problem !');
 };
 
-return function (ConfigurableKernel $kernel) use ($config, $test) {
+return function (ConfigurableKernel $kernel) use ($config, $test): void {
     $container = new ContainerBuilder();
-    $container->setParameter('kernel.secret', md5(time()));
+    $container->setParameter('kernel.secret', md5((string) time()));
 
     $kernel
         ->setContainerBuilder($container)

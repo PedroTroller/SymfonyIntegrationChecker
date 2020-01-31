@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PedroTroller\Symfony\IntegrationChecker;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -37,26 +39,6 @@ class ConfigurableKernel extends Kernel
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function getContainerBuilder()
-    {
-        if (null === $this->containerBuilder) {
-            $this->containerBuilder = parent::getContainerBuilder();
-        } else {
-            $this->containerBuilder->merge(parent::getContainerBuilder());
-        }
-
-        foreach ($this->config as $extension => $config) {
-            $this->containerBuilder->prependExtensionConfig($extension, $config);
-        }
-
-        return $this->containerBuilder;
-    }
-
-    /**
-     * @param ContainerBuilder $containerBuilder
-     *
      * @return ConfigurableKernel
      */
     public function setContainerBuilder(ContainerBuilder $containerBuilder)
@@ -67,13 +49,21 @@ class ConfigurableKernel extends Kernel
     }
 
     /**
-     * @param array $config
-     *
      * @return ConfigurableKernel
      */
     public function setConfig(array $config)
     {
         $this->config = $config;
+
+        return $this;
+    }
+
+    /**
+     * @return ConfigurableKernel
+     */
+    public function afterBoot(callable $callable)
+    {
+        $this->afterBoot[] = $callable;
 
         return $this;
     }
@@ -107,8 +97,6 @@ class ConfigurableKernel extends Kernel
     }
 
     /**
-     * @param BundleInterface $bundle
-     *
      * @return ConfigurableKernel
      */
     public function addBundle(BundleInterface $bundle)
@@ -135,22 +123,28 @@ class ConfigurableKernel extends Kernel
     }
 
     /**
-     * @param callable $callable
-     *
-     * @return ConfigurableKernel
-     */
-    public function afterBoot(callable $callable)
-    {
-        $this->afterBoot[] = $callable;
-
-        return $this;
-    }
-
-    /**
      * @return callable[]
      */
     public function getAfterBootCallables()
     {
         return $this->afterBoot;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getContainerBuilder()
+    {
+        if (null === $this->containerBuilder) {
+            $this->containerBuilder = parent::getContainerBuilder();
+        } else {
+            $this->containerBuilder->merge(parent::getContainerBuilder());
+        }
+
+        foreach ($this->config as $extension => $config) {
+            $this->containerBuilder->prependExtensionConfig($extension, $config);
+        }
+
+        return $this->containerBuilder;
     }
 }
